@@ -10,3 +10,4 @@
 *.pdf
 *.toc
 *blx.bib
+_minted*
