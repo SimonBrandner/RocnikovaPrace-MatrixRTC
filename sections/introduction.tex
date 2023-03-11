@@ -9,10 +9,10 @@ to jen dva roky a Ray Tomlinson poslal první e-mail, který zněl \uv{something
 	like QWERTYUIOP}.
 
 V roce 1974 byl proveden první tzv. \textit{voice over internet protocol} (dále
-\textit{VoIP}) hovor po ARPANETu. V roce 1989 se v CERNu v rukou britského vědce
-jménem Tim Berners-Lee zrodil WWW. Téhož roku vznikla první VoIP aplikace
-\textit{Speak Freely} a po dvou letech se objevila první webkamera, která
-snímala konvici na kávu v počítačové laboratoři na University of Cambridge.
+\textit{VoIP}) hovor po ARPANETu. V roce 1989 se v CERNu britský vědec Tim
+Berners-Lee stvořil WWW. Téhož roku vznikla první VoIP aplikace \textit{Speak
+	Freely} a po dvou letech se objevila první webkamera, která snímala konvici na
+kávu v počítačové laboratoři na University of Cambridge.
 
 29. srpna 2003 byla vydaná první verze aplikace \textit{Skype} a sloveso
 \uv{skypovat} se během dalších let běžnou součástí slovníku mnoha lidí. Často je
@@ -21,34 +21,34 @@ ukazuje na to, že VoIP aplikace se staly běžnou součástí našich životů.
 
 Využití VoIP aplikací zaznamenalo další \uv{boom} v době pandemie Covidu-19, kdy
 byla většina lidí nucena pracovat z domova, a tak se tyto nástroje staly
-nepostradatelné.
+nepostradatelnými.
 
 Dnes většina VoIP aplikací, jako je např. MS Teams, Discord, Jitsi atp., využívá
 protokolu \textit{WebRTC} (\textit{RTC} je zkratka pro \textit{Real Time
 	Communication}), který se stal standardem pro komunikaci na WWW v reálném čase a
-my se jim budeme zabývat v části \ref{webRTC}. Oproti prvním VoIP aplikacím tyto
+my se jimi budeme zabývat v části \ref{webRTC}. Oproti prvním VoIP aplikacím tyto
 přinesly mnoho zlepšení, mimo jiné např. umožňují skupinové hovory až s tisíci
 uživateli, na to, jak toho docilují, se podíváme v části \ref{connectionModels}.
 Na samotné aplikace se pak podíváme v části \ref{voipTech}.
 
-Přes mnoho zlepšení, které jsme ale zaznamenali, jsme se v jistých věcech
-posunuli spíše zpět než do předu. Protokoly, které používáme pro e-mailovou
-komunikaci umožňují tzv. \textit{federaci}. V tomto kontextu federace znamená,
-že jednotlivé e-mail servery spolu mohou komunikovat, a je tedy možné poslat
-e-mail od jednoho e-mailové poskytovatele k druhém (např. uživatelé Gmailu a
-Seznamu si spolu mohou bez jakýchkoliv potíží vyměňovat e-maily). Podobně na tom
-byly kdysi i aplikace Yahoo! Messenger MSN Messenger, ale o většině dnešních
-aplikací určených pro chat říct nemůžeme -- dnes už asi nikoho nenapadne, že by
+Přes mnoho zlepšení, které jsme ale zaznamenali, v jistých ohledech dochází
+spíše ke zhoršení. Protokoly, které používáme pro e-mailovou komunikaci umožňují
+tzv. \textit{federaci}. V tomto kontextu federace znamená, že jednotlivé e-mail
+servery spolu mohou komunikovat, a je tedy možné poslat e-mail od jednoho
+e-mailové poskytovatele k druhému (např. uživatelé Gmailu a Seznamu si spolu
+mohou bez jakýchkoliv potíží vyměňovat e-maily). Podobně na tom byly kdysi i
+aplikace Yahoo! Messenger MSN Messenger, ale o většině dnešních aplikací
+určených pro chat to samé říct nemůžeme -- dnes už asi nikoho nenapadne, že by
 si uživatel Messengeru mohl vyměňovat zprávy s uživateli What's App.
 
 Existují ale protokoly jako \textit{ActivityPub}, \textit{XMPP} a
 \textit{Matrix} (více v části \ref{matrix}), které se snaží situaci změnit.
-Právě protokol Matrix budu další věcí, kterou se budeme zabývat, jelikož kromě
+Právě protokol Matrix bude další věcí, kterou se budeme zabývat, jelikož kromě
 běžných funkcí pro chat také umožňuje VoIP hovory (více v části
 \ref{matrixRTC}).
 
 Přesto, že protokol Matrix podporuje VoIP hovory, je tato součást protokol stále
-ve vývoji a chybí jí některé funkce jako jsou např. break-out rooms. V částí
+ve vývoji a chybí jí některé funkce, jako jsou např. break-out rooms. V částí
 \ref{breakoutRooms} se pokusíme navrhnout, jak do protokolu tuto funkci přidat a
 následně ji i implementujeme.
 
