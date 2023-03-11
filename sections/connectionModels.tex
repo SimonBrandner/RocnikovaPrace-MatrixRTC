@@ -1,23 +1,110 @@
-\section{Přehled connection modelů}
+\section{Skupinové volání pomocí WebRTC}\label{connectionModels}
 
-Lorem
-
-\subsection{Peer-to-peer}
-
-Lorem
+Jak bylo zmíněno v části \ref{webRTC}, protokol WebRTC funguje na P2P bázi, což
+vznáší otázku, jak využít tuto technologii pro skupinové volání, kdy už je peer
+klientů potenciálně více než dva. K řešení tohoto problém existuje několik
+přístupů, které si následně rozebereme.
 
 \subsection{Full-mesh}
 
-Lorem
+\begin{figure}[h]
+	\centering
+	\begin{tikzpicture}[every node/.style={draw,circle}]
+		\foreach \i in {1,...,5} {
+				\node (\i) at ({360/5*(\i-1)}:2) {\i};
+			}
+		\foreach \i in {1,...,4} {
+				\foreach \j in {\the\numexpr\i+1,...,5} {
+						\draw (\i)--(\j);
+					}
+			}
+	\end{tikzpicture}
+	\caption{Full-mesh}
+	\label{fullMeshFig}
+\end{figure}
 
-\subsection{Foci}
+Prvním způsob je tzv. spojení \textit{full-mesh}, kde každý klient komunikuje s
+každým dalším klientem, jak je zobrazeno na obrázku č. \ref{fullMeshFig}. Hlavní
+výhodou tohoto přístupu je, že nevyžaduje žádné backend komponenty (servery) --
+není třeba o žádný backend starat, zároveň nehrozí, že při selhání backendu by
+se uživatelé klienti spojit. Tento přístup má ale bohužel také mnoho potíží.
 
-Lorem
+První potíž může být vytvoření samotného spojení dvou klientů -- v klasickém P2P
+modelu obvykle dochází k tomu, že jeden uživatel volá druhého, to samé ale ve
+full-mesh platit nemusí. Často totiž může již existovat skupinový hovor, když se
+dva noví uživatelé pokusí připojit, a tak může být nejasné, který ze dvou
+klientů bude volat druhého. Jedním řešením jsou \textit{glare resolution
+	algorithms}, které řeší situaci, kdy se oba klienti snaží kontaktovat toho
+druhého. Dalším přístupem může být využití lexikografického uspořádání
+identifikátorů klientů pro deterministické určení klienta, který budu toho
+druhého volat.
 
-\subsubsection{SFU}
+Full-mesh spojení má také nevýhodu v tom ohledu, že může častěji docházet k tzv.
+\textit{split-brains}. Protože je každý klient spojen s každým dalším klientem
+je velký prostor pro nějakou chybu, hrozí poté tedy, že jeden z klientů budu
+přijímat streamy jen od určité pod-skupiny klientů, zatímco jiný klient bude
+přijímat stream od jiné pod-skupiny klientů, a tak dva uživatelé, kteří se
+hovoru účastní můžou mít značně odlišný zážitek.
 
-Lorem
+Dalším problémem je zátěž na klienta -- přijímá RTP streamy všech klientů, které
+musí nejdříve rozšifrovat a dekódovat, a zároveň posílá všechny své RTP streamy
+ostatním klientům, ty musí naopak enkódovat a následně zašifrovat. Při vyšším
+počtu klientů v hovoru je pak třeba, aby všichni klienti běželi na dostatečně
+silném hardwaru.
 
-\subsubsection{MCU}
+Další bariérou je internetové přípojení -- většina klientů totiž nemá dostatečně
+rychlou síť, aby mohli posílat RTP streamy všem uživatelům, a tak je realisticky
+možné provádět jen hovory v nižších počtech klientů (obvykle je maximum 5 - 8
+klientů) pomocí full-mesh spojení.
 
-Lorem
+\subsection{Servery -- foci}
+
+Možným řešením problémů s full-mesh spojením je využití backendu. V tomto
+případě bude každý klient posílat své RTP streamy serveru, ze kterého se tedy
+stává tzv. \textit{focus} (bod, kam jsou jednotlivé streamy soustředěny; množné
+číslo je \textit{foci}), tento focus poté streamy rozšiřuje mezi ostatní
+klienty. Existují zde dva hlavní přístupy, které si níže rozebereme.
+
+\subsubsection{Multipoint Control Unit}
+
+První možností je tzv. \textit{Multipoint Control Unit} (dále \textit{MCU}),
+tento server přijímá streamy jednotlivých klientů a následně je transkóduje a
+mixuje do jednoho, který pak zpět posílá všem uživatelům. Hlavní výhodou tohoto
+přístupu je, že klient nemusí mít vysoký ani download, neboť přijímá jen jeden
+stream. Má ale relativně dost nevýhod.
+
+První z je, že streamy jsou mixované do jednoho streamu, který je pak pro
+všechny klienty stejný, neumožňuje tedy uživatelům klientů, aby si vybrali,
+kterému streamu budou věnovat pozornost atp.
+
+Zároveň proces transkódování a mixování je poměrně náročný na výkon, tento
+server tedy potřebuje silný hardware. Tento proces je také mírně časově náročný,
+což znamená, že uživatelé vidí a slyší věci s mírným zpožděním.
+
+Poslední nevýhodou, kterou zmíníme, je to, že proto aby server mohl streamy
+transkódovat a mixovat, je nutné, aby je nejdříve rozšifroval, což znamená, že z
+principu není možné, aby komunikace mezi klienty byla E2EE.
+
+\subsubsection{Selective Forwarding Unit}
+
+Druhou možností je tzv. \textit{Selective Forwarding Unit} (dále \textit{SFU}),
+tento server přijímá streamy jednotlivých klientů a následně pod-skupinu těchto
+streamů přeposílá ostatním klientům.
+
+Toto řešení má několik výhod -- umožňuje E2EE, neboť nepotřebuje
+streamy transkódovat a mixovat, a z toho samého důvodu nemá takové požadavky na
+hardware, jednotlivé streamy jsou klientům posílány samostatně, takže si
+uživatel může zvolit, čemu bude věnovat pozornost, zároveň tento model umožňuje
+tzv. \textit{federaci} (více v částech \ref{matrix} a \ref{matrixRTC}).
+
+Oproti MCU sice vyžaduje větší download, neboť klienti přijímají streamy
+jednotlivě. Tohle ale není tak velký problém, neboť SFU může posílat jen určitou
+podskupinu streamů. Zároveň existuje metoda s názvem \textit{simulcast}, kdy
+klient SFu posílá několik verzí svých streamů v různých rozlišeních (obvykle
+jsou to původní, poloviční a čtvrteční) a frameratech, SFU poté přeposílá
+vhodnou verzi streamu. Vhodná verze se obvykle vybírá na základě několika
+kritérií, prvním často je, v jakém rozlišení bude video zobrazeno na koncovém
+klientovi -- např. jestli má uživatel jedno video velkém rozlišení a ostatní
+jsou malá, nebo či má všechny videa zobrazena ve stejném rozlišení bez toho, aby
+nějaké bylo zvětšené. Dalším faktorem při výběru je poté spojení s jednotlivým
+klienty a jeho kvalita.
