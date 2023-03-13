@@ -4,10 +4,10 @@ Protokol Matrix je otevřený standard pro bezpečnou, decentralizovanou real-ti
 komunikaci. Protokol byl vytvořen jako způsob řešení problému tzv.
 \textit{walled gardens}. Sám o sobě je protokol federovaný, tedy podobně jako
 email umožňuje klientům jednoho serveru komunikovat s klienty serveru druhého.
-Od června 2019 je mimo betu \cite{MatrixORG-Homepage}.
+Od června 2019 je mimo betu \cite{MatrixORG-FAQ,MatrixORG-Homepage}.
 
 Je spravován neziskovou organizací jménem Matrix.org Foundation a jeho
-referenční implementace používají permisivní licenci Apache.
+referenční implementace používají permisivní licenci Apache \cite{MatrixORG-Homepage}.
 
 \subsection{Specifikace a její změny}
 
@@ -41,7 +41,7 @@ zkontrolováno členy \textit{Spec Core Týmu} (\textit{SCT}), který se o
 specifikaci stará. Pokud se MSC dostane do stavu, kde nejsou vznášeny připomínky
 a ty, co byly vznešené, byly vyřešeny, může člen SCT navrhnout spuštění tzv.
 \textit{Final Comment Period} (\textit{FCP}). Pro to, aby FCP začala je třeba
-souhlas 75 \% SCT.
+souhlas 75~\% SCT \cite{MatrixORG-MSCs}.
 
 Když FCP započne, je prostor 5 dnů na to, aby kdokoliv vznesl připomínky.
 Jsou-li vzneseny závažné připomínky, člen SCT může FCP zablokovat. Proběhne-li
@@ -49,7 +49,7 @@ FCP do konce, je MSC schváleno a nastává čas pro samotnou změnu specifikace
 jedná se obvykle další pull request, který vytvoří člen SCT na repositáři
 \href{https://github.com/matrix-org/matrix-spec}{matrix-spec}. Když
 je tento pull request přijat, změna se stala součástí nestabilní verze
-specifikace a bude v další stabilní verzi.
+specifikace a bude v další stabilní verzi \cite{MatrixORG-MSCs}.
 
 \subsection{Primitiva}
 
@@ -60,14 +60,15 @@ Matrix má několik základních primitiv, které si zde rozebereme.
 Každý klient je asociovaný s uživatelským účtem, ty jsou identifikované pomocí
 \mintinline{html}{user_id}. To má obecně následující formu:
 \mintinline{html}{@localpart:domain}. Reálné uživatelské ID pak může vypadat
-takto: \mintinline{html}{@alice:server.org}.
+takto: \mintinline{html}{@alice:server.org} \cite{MatrixORG-Spec}.
 
 \subsubsection{Zařízení}
 
 Zařízení mají v protokolu Matrix specifický význam -- nejedná se o fyzické
 zařízení, ale jedná se o abstrakci jednoho přihlášeného klienta. Každý uživatel
 může mít několik zařízení, ze kterých využívá svůj účet. Zařízení je obvykle
-identifikováno pomocí \mintinline{html}{user_id} a \mintinline{html}{device_id}.
+identifikováno pomocí \mintinline{html}{user_id} a \mintinline{html}{device_id}
+\cite{MatrixORG-Spec}.
 
 Zařízení mají hlavně význam pro šifrování -- viz \ref{matrix-encryption}.
 
@@ -81,19 +82,19 @@ decentralizovanou databází pro JSON data. Místnost ani její obsah neexistuje
 synchronizovanou s ostatními homeservery. Kromě místností pro chat, existují
 např. tzv. \textit{prostory} (\textit{spaces}), které odkazují na jiné
 místnosti, a tak umožňují vytvořit hierarchickou strukturu místností (analogií
-jsou např. týmy v aplikace MS Teams).
+jsou např. týmy v aplikace MS Teams) \cite{MatrixORG-Spec}.
 
 Místnost obsahuje tzv. \textit{události} (\textit{events}), které jsou obvykle
 produktem akce na straně klienta (např. poslání zprávy). Události se dělí na dva
 druhy -- prvním druhem jsou \textit{message události}, jedná se např. o běžné
 zprávy a reakce, druhým typem jsou \textit{state události}, které reprezentují
 trvalé informace jako je např. jméno místnosti, téma místnosti, členství v
-místnosti atp.
+místnosti atp \cite{MatrixORG-Spec}.
 
 Vzhledem k tomu, že state události můžou být měněny více uživateli, existuje tzv.
 \textit{state resolution algorithm}, který umožňuje homeserverům se shodnout na
 obsahu state událostí, pokud došlo k tomu, že homeservery nebyly nějakou dobu ve
-spojení.
+spojení \cite{MatrixORG-Spec}.
 
 \subsubsection{To-device messages}
 
@@ -104,61 +105,69 @@ volání (více v části \ref{matrixRTC}).
 
 \subsection{Klienti}
 
-V tento moment existují pravděpodobně stovky Matrix
-SDKs\footnote{\textit{Software Development Kit} je skupina nástrojů určená pro
-	zjednodušení vývoj na dané platformě
+V tento moment existují pravděpodobně stovky Matrix SDKs\footnote{
+	\textit{Software Development Kit} je skupina nástrojů určená pro zjednodušení
+	vývoj na dané platformě \cite{RedHat-WhatIsAnSDK}.
 } a klientů, z nichž je většina vyvíjena komunitou. Mezi ty známé patří např.
-Element, Hydrogen, Nheko, FluffyChat, či Cinny.
+Element \cite{Element-Homepage}, Hydrogen \cite{GitHub-Hydrogen}, Nheko
+\cite{GitHub-Nheko}, FluffyChat \cite{FluffyChat-Homepage}, či Cinny
+\cite{Cinny-Homepage}.
 
-Element je všeobecný klient pro Matrix chat, jeho webová verze používá
+Element je všeobecný klient pro Matrix chat \cite{Element-Homepage}, jeho webová
+verze používá
 \href{https://github.com/matrix-org/matrix-js-sdk/}{matrix-js-sdk}, které je
-napsané v TypeScriptu. Stejné SDK používá klient Cinny, který je specifický pro
-své uživatelské rozhraní inspirované Discordem. Jedná se SDK, které je jednou z
-referenčních implementací protokolu Matrix. Desktopová verze Elementu je pak
-Electron\footnote{
-	Electron je framework pro vytváření desktopových aplikací pomocí webových technologií.
-} wrapper kolem jeho webové verze. Hydrogen je rovněž webová aplikace, která
-používá své vlastní SDK, které je z části v TypeScriptu a z části v JavaScriptu,
-toto SDK ale využívají i jiní klienti (viz \ref{thirdroom}); tento klient má za
-cíl mít co nejnižší požadavky na hardware a měl by běžet i v prohlížečích jako
-je Internet Explorer\footnote{
+napsané v TypeScriptu \cite{GitHub-MatrixJSSDK}. Stejné SDK používá klient
+Cinny, který je specifický pro své uživatelské rozhraní inspirované Discordem
+\cite{Cinny-Homepage,GitHub-Cinny}. Jedná se SDK, které je jednou z referenčních
+implementací protokolu Matrix \cite{GitHub-MatrixJSSDK}. Desktopová verze
+Elementu je pak Electron\footnote{
+	Electron je framework pro vytváření desktopových aplikací pomocí webových
+	technologií \cite{ElectronJS-Homepage}.
+} wrapper kolem jeho webové verze \cite{GitHub-ElementDesktop}. Hydrogen je
+rovněž webová aplikace, která používá své vlastní SDK, které je z části v
+TypeScriptu a z části v JavaScriptu, toto SDK ale využívají i jiní klienti (viz
+\ref{thirdroom}); tento klient má za cíl mít co nejnižší požadavky na hardware a
+měl by běžet i v prohlížečích jako je Internet Explorer\footnote{
 	Internet Explorer je jeden z nejvíce nenáviděných internetových prohlížečů,
 	jedním z důvodů je, že nepodporuje mnoho moderní funkcí, ale mnoho vývojářů je s
-	ním přesto nuceno pracovat.
-}.
+	ním přesto nuceno pracovat
+	\cite{ZealousSites-WhyDoWebDevelopersHateInternetExplorer}.
+} \cite{GitHub-Hydrogen}.
 
 Android a iOS verze Elementu využívají každá své vlastní SDK (v Kotlinu a
-Objective C), ale probíhá vývoj nástupců těchto aplikací jménem Element~X, které
-budou využívat
-\href{https://github.com/matrix-org/matrix-rust-sdk}{matrix-rust-sdk}.
+Objective C) \cite{GitHub-ElementAndroid,GitHub-ElementIOS}, ale probíhá vývoj
+nástupců těchto aplikací jménem Element~X, které budou využívat
+\href{https://github.com/matrix-org/matrix-rust-sdk}{matrix-rust-sdk}
+\cite{GitHub-ElementXAndroid,GitHub-ElementXIOS}.
 
 Nheko je desktopový klient napsaný v jazyce C++ s pomocí knihovny Qt pro tvoření
-uživatelských rozhraní.
+uživatelských rozhraní \cite{GitHub-Nheko}.
 
 FluffyChat je klient zaměřený na jednoduchost používání, je napsaný v jazyce
 Dark, a tak běží na operačních systémech Android a iOS, ale i na webu a
-desktopu.
+desktopu \cite{FluffyChat-Homepage,GitLab-FluffyChat}.
 
 \subsection{Homeservery}
 
 Tři nejvýznamnější implementace homeserverů jsou
-\href{https://github.com/matrix-org/synapse/}{Synapse}, který je napsaný v
+\href{https://github.com/matrix-org/synapse/}{Synapse} , který je napsaný v
 jazyce Python, jedná se o referenční implementaci a historicky první
-implementaci  Matrix homeserveru,
+implementaci Matrix homeserveru \cite{GitHub-Synapse},
 \href{https://github.com/matrix-org/dendrite/}{Dendrite}, který je napsaný v
-jazyce Go a má být nástupce Synapse, a
+jazyce Go a má být nástupce Synapse \cite{GitHub-Dendrite}, a
 \href{https://github.com/timokoesters/conduit}{Conduit}, který je napsaný v
-jazyce Rust a je spravován komunitou.
+jazyce Rust a je spravován komunitou \cite{GitHub-Conduit}.
 
 Mezi další homeservery patří např.
-\href{https://github.com/matrix-construct/construct}{Construct} v jazyce C++.
+\href{https://github.com/matrix-construct/construct}{Construct} v jazyce C++
+\cite{GitHub-Construct}.
 
 \subsection{Bridging}
 
 Vzhledem k tomu, že je nepravděpodobné, že by společnosti jako Google, či
 Microsoft adoptovaly protokol Matrix, protokol umožňuje tzv. \textit{bridging}.
 Jedná se o způsob, jak "přemostit" uživatele z jiných platforem (jako je např.
-Messenger, či MS Teams) do protokolu Matrix.
+Messenger, či MS Teams) do protokolu Matrix \cite{MatrixORG-Bridges}.
 
 \subsection{End-to-end šifrování}\label{matrix-encryption}
 
@@ -167,14 +176,17 @@ Protokol Matrix podporuje E2EE -- message události v místnostech mohou být
 Jednotlivé message události jsou zašifrovány pomocí symetrického šifrování AES.
 Klíče jsou poté přeposílány mezi zařízeními, které jsou v místnosti, pomocí
 to-device messages, které jsou šifrované pomocí asymetrické kryptografie nad
-eliptickými křivkami (využívají se především dvě knihovny -- \textit{Olm}, která
-je napsané v jazyce, a
+eliptickými křivkami (využívají se především dvě knihovny --
+\href{https://gitlab.matrix.org/matrix-org/olm}{olm}, která je napsané v jazyce
+C \cite{GitLab-Olm} , a
 \href{https://github.com/matrix-org/vodozemac}{vodozemac}, která je napsaná v
 jazyce Rust a je součástí
-\href{https://github.com/matrix-org/matrix-rust-sdk}{matrix-rust-sdk}).
+\href{https://github.com/matrix-org/matrix-rust-sdk}{matrix-rust-sdk})
+\cite{GitHub-MatrixRustSDK}.
 
 Aktuálně není možné šifrovat state události, ale existují MSCs, které by to
-umožnily. Zároveň se pracuje na integraci protokolu \textit{Messaging Layer
-	Security} (dále \textit{MLS}), který má fungovat lépe v místnostech s velkým
-množstvím zařízení. MLS je ale třeba rozšířit tak, aby podporovalo federované
-systémy, rozšíření se pak nazývá \textit{Decentralized Message Layer Security}.
+umožnily \cite{GitHub-MSC3414}. Zároveň se pracuje na integraci protokolu
+\textit{Messaging Layer Security} (dále \textit{MLS}), který má fungovat lépe v
+místnostech s velkým množstvím zařízení. MLS je ale třeba rozšířit tak, aby
+podporovalo federované systémy, rozšíření se pak nazývá \textit{Decentralized
+	Message Layer Security} \cite{AreWeMLSYet}.
