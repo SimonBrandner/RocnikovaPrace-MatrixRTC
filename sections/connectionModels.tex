@@ -11,11 +11,12 @@ přístupů, které si následně rozebereme.
 	\centering
 	\begin{tikzpicture}[every node/.style={draw,circle}]
 		\foreach \i in {1,...,5} {
-				\node (\i) at ({360/5*(\i-1)}:2) {\i};
+				\node (\i) at ({(90-360/5*(\i-1))}:2) {\i};
 			}
 		\foreach \i in {1,...,4} {
 				\foreach \j in {\the\numexpr\i+1,...,5} {
-						\draw (\i)--(\j);
+						\draw[red,->] (\i) edge[bend right=5] (\j);
+						\draw[blue,->] (\j) edge[bend right=5] (\i);
 					}
 			}
 	\end{tikzpicture}
@@ -69,11 +70,28 @@ klienty. Existují zde dva hlavní přístupy, které si níže rozebereme.
 
 \subsubsection{Multipoint Control Unit}
 
+\begin{figure}[h]
+	\centering
+	\begin{tikzpicture}[every node/.style={draw,circle}]
+		\node (MCU) at (0,0) {MCU};
+
+		\foreach \i in {1,...,5} {
+				\node (\i) at ({90-360/5*(\i-1)}:2) {\i};
+			}
+		\foreach \i in {1,...,5} {
+				\draw[red,->] (\i) edge[bend right=5] (MCU);
+				\draw[blue,->] (MCU) edge[bend right=5] (\i);
+			}
+	\end{tikzpicture}
+	\caption{Multipoint Control Unit}
+	\label{mcu}
+\end{figure}
+
 První možností je tzv. \textit{Multipoint Control Unit} (dále \textit{MCU}),
 tento server přijímá streamy jednotlivých klientů a následně je transkóduje a
-mixuje do jednoho, který pak zpět posílá všem uživatelům. Hlavní výhodou tohoto
-přístupu je, že klient nemusí mít vysoký ani download, neboť přijímá jen jeden
-stream. Má ale relativně dost nevýhod.
+mixuje do jednoho, který pak zpět posílá všem uživatelům (viz obrázek č.
+\ref{mcu}). Hlavní výhodou tohoto přístupu je, že klient nemusí mít vysoký ani
+download, neboť přijímá jen jeden stream. Má ale relativně dost nevýhod.
 
 První z nich je, že streamy jsou mixované do jednoho streamu, který je pak pro
 všechny klienty stejný, neumožňuje tedy uživatelům klientů, aby si vybrali,
@@ -89,9 +107,28 @@ principu není možné, aby komunikace mezi klienty byla E2EE.
 
 \subsubsection{Selective Forwarding Unit}
 
+\begin{figure}[h]
+	\centering
+	\begin{tikzpicture}[every node/.style={draw,circle}]
+		\node (SFU) at (0,0) {SFU};
+
+		\foreach \i in {1,...,5} {
+				\node (\i) at ({90-360/5*(\i-1)}:2) {\i};
+			}
+		\foreach \i in {1,...,5} {
+				\draw[red,->] (\i) edge[bend right=5] (SFU);
+				\foreach \j in {1,...,4} {
+						\draw[blue,->] (SFU) edge[bend right=5*\j] (\i);
+					}
+			}
+	\end{tikzpicture}
+	\caption{Selective Control Unit}
+	\label{sfu}
+\end{figure}
+
 Druhou možností je tzv. \textit{Selective Forwarding Unit} (dále \textit{SFU}),
 tento server přijímá streamy jednotlivých klientů a následně podskupinu těchto
-streamů přeposílá ostatním klientům.
+streamů přeposílá ostatním klientům, jak je vidět na obrázku č. \ref{sfu}.
 
 Toto řešení má několik výhod -- umožňuje E2EE, neboť nepotřebuje
 streamy transkódovat a mixovat, a z toho samého důvodu nemá takové požadavky na
